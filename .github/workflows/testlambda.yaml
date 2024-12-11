@@ -28,19 +28,17 @@ jobs:
       - name: Zip code
         run: zip -r testlambda.zip .
 
-      # Step 5: Upload the zip file as an artifact (optional for debugging)
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: testlambda
-          path: testlambda.zip
-
-      # Step 6: Deploy to AWS Lambda
-      - name: Deploy to AWS Lambda
-        uses: aws-actions/aws-lambda-deploy@v1.1.0
+          # Step 5: Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          function-name: lambdatest-Node22-madhura
-          zip-file: testlambda.zip
+
+      # Step 6: Deploy to AWS Lambda using AWS CLI
+      - name: Deploy to AWS Lambda
+        run: |
+          aws lambda update-function-code --function-name lambdatest-Node22-madhura --zip-file fileb://testlambda.zip
+
+
