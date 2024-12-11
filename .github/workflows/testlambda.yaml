@@ -1,0 +1,46 @@
+name: Deploy to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Zip the Lambda function code
+      - name: Zip code
+        run: zip -r testlambda.zip .
+
+      # Step 5: Upload the zip file as an artifact (optional for debugging)
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: testlambda
+          path: testlambda.zip
+
+      # Step 6: Deploy to AWS Lambda
+      - name: Deploy to AWS Lambda
+        uses: aws-actions/aws-lambda-deploy@v1.1.0
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          function-name: lambdatest-Node22-madhura
+          zip-file: testlambda.zip
