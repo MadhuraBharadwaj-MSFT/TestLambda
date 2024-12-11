@@ -11,7 +11,7 @@ export const handler = async (event) => {
     try {
         if (event.body) {
             const body = JSON.parse(event.body); // Parse event.body
-            message = body.message || 'No message provided - pushed from GitHub actions';
+            message = body.message || 'No message provided - deployed from GitHub actions ';
         } else if (event.message) {
             message = event.message;
         } else {
